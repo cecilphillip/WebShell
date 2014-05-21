@@ -16,52 +16,14 @@ namespace NetBash
 
         public static ReadOnlyCollection<Assembly> GetAssemblies()
         {
-            if (AllAssemblies == null)
-            {
-                AllAssemblies = //new ReadOnlyCollection<Assembly>(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToList());
-                    new ReadOnlyCollection<Assembly>((from file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + @"bin\")
-                                                      where Path.GetExtension(file) == ".dll"
-                                                      select Assembly.LoadFrom(file)).ToList());
-            }
-            
-            
+            if(AllAssemblies != null) return AllAssemblies;
+            //TODO: remove this after OWIN implementaiton new ReadOnlyCollection<Assembly>(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToList());
+            AllAssemblies = new ReadOnlyCollection<Assembly>((from file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + @"bin\")
+                                                  where Path.GetExtension(file) == ".dll"
+                                                  select Assembly.LoadFrom(file)).ToList());
+
+
             return AllAssemblies;
-        }
-
-        public static ReadOnlyCollection<Assembly> GetBinFolderAssemblies()
-        {
-            if (BinFolderAssemblies == null)
-            {
-                IList<Assembly> binFolderAssemblies = new List<Assembly>();
-
-                string binFolder = HttpRuntime.AppDomainAppPath + "bin\\";
-                IList<string> dllFiles = Directory.GetFiles(binFolder, "*.dll",
-                    SearchOption.TopDirectoryOnly).ToList();
-
-                foreach (string dllFile in dllFiles)
-                {
-                    try
-                    {
-                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(dllFile);
-
-                        Assembly locatedAssembly = AllAssemblies.FirstOrDefault(a =>
-                            AssemblyName.ReferenceMatchesDefinition(a.GetName(), assemblyName));
-
-                        if (locatedAssembly != null)
-                        {
-                            binFolderAssemblies.Add(locatedAssembly);
-                        }
-                    }
-                    catch
-                    {
-                        //whatevs
-                    }
-                }
-
-                BinFolderAssemblies = new ReadOnlyCollection<Assembly>(binFolderAssemblies);
-            }
-
-            return BinFolderAssemblies;
         }
     }
 }
