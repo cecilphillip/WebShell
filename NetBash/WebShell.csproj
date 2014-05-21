@@ -8,8 +8,8 @@
     <ProjectGuid>{AD552539-66F6-4FA2-8763-D76893A6DF69}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NetBash</RootNamespace>
-    <AssemblyName>NetBash</AssemblyName>
+    <RootNamespace>WebShell</RootNamespace>
+    <AssemblyName>WebShell</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

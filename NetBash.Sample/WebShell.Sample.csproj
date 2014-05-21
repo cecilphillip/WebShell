@@ -171,9 +171,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetBash\NetBash.csproj">
+    <ProjectReference Include="..\NetBash\WebShell.csproj">
       <Project>{AD552539-66F6-4FA2-8763-D76893A6DF69}</Project>
-      <Name>NetBash</Name>
+      <Name>WebShell</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
