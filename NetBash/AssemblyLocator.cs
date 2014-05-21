@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -17,9 +18,13 @@ namespace NetBash
         {
             if (AllAssemblies == null)
             {
-                AllAssemblies = new ReadOnlyCollection<Assembly>(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToList());
+                AllAssemblies = //new ReadOnlyCollection<Assembly>(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToList());
+                    new ReadOnlyCollection<Assembly>((from file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + @"bin\")
+                                                      where Path.GetExtension(file) == ".dll"
+                                                      select Assembly.LoadFrom(file)).ToList());
             }
-
+            
+            
             return AllAssemblies;
         }
 
