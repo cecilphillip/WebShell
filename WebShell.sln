@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShell", "NetBash\WebShell.csproj", "{AD552539-66F6-4FA2-8763-D76893A6DF69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShell", "WebShell\WebShell.csproj", "{AD552539-66F6-4FA2-8763-D76893A6DF69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShell.Sample", "NetBash.Sample\WebShell.Sample.csproj", "{774201D2-F1BA-4595-9828-204A5390395A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShell.Sample", "WebShell.Sample\WebShell.Sample.csproj", "{774201D2-F1BA-4595-9828-204A5390395A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B87C178A-FDE2-4A40-A0B9-9C894D77286F}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
