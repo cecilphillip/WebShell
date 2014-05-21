@@ -8,16 +8,16 @@ using System.Web;
 using System.Web.Routing;
 using System.Web.Script.Serialization;
 
-namespace NetBash.UI
+namespace WebShell.UI
 {
-    public class NetBashHandler : IRouteHandler, IHttpHandler
+    public class WebShellHandler : IRouteHandler, IHttpHandler
     {
         internal static HtmlString RenderIncludes()
         {
-            if (NetBash.Settings.Authorize != null && !NetBash.Settings.Authorize(HttpContext.Current.Request))
+            if (Settings.Authorize != null && !Settings.Authorize(HttpContext.Current.Request))
                 return new HtmlString(""); //not authorized dont render
 
-            const string format =
+            const string FORMAT =
 @"<link rel=""stylesheet"" type=""text/css"" href=""{0}netbash-style-css?v={1}"">
 <script type=""text/javascript"">
     if (!window.jQuery) document.write(unescape(""%3Cscript src='{0}netbash-jquery-js' type='text/javascript'%3E%3C/script%3E""));
@@ -27,12 +27,12 @@ namespace NetBash.UI
 <script type=""text/javascript"">var netbash = new NetBash(jQuery, window, {{ welcomeMessage: '{2}', version: '{3}', isHidden: {4}, routeBasePath: '{5}' }});</script>";
 
             var result = "";
-            result = string.Format(format, 
-                                   ensureTrailingSlash(VirtualPathUtility.ToAbsolute(NetBash.Settings.RouteBasePath)), 
-                                   NetBash.Settings.Hash, NetBash.Settings.WelcomeMessage, 
-                                   NetBash.Settings.Version, 
-                                   NetBash.Settings.HiddenByDefault.ToString().ToLower(), 
-                                   NetBash.Settings.RouteBasePath.Replace("~", ""));
+            result = string.Format(FORMAT, 
+                                   EnsureTrailingSlash(VirtualPathUtility.ToAbsolute(Settings.RouteBasePath)), 
+                                   Settings.Hash, Settings.WelcomeMessage, 
+                                   Settings.Version, 
+                                   Settings.HiddenByDefault.ToString().ToLower(), 
+                                   Settings.RouteBasePath.Replace("~", ""));
 
             return new HtmlString(result);
         }
@@ -49,8 +49,8 @@ namespace NetBash.UI
             };
 
             var routes = RouteTable.Routes;
-            var handler = new NetBashHandler();
-            var prefix = ensureTrailingSlash((NetBash.Settings.RouteBasePath ?? "").Replace("~/", ""));
+            var handler = new WebShellHandler();
+            var prefix = EnsureTrailingSlash((Settings.RouteBasePath ?? "").Replace("~/", ""));
 
             using (routes.GetWriteLock())
             {
@@ -68,7 +68,7 @@ namespace NetBash.UI
             }
         }
 
-        private static string ensureTrailingSlash(string input)
+        private static string EnsureTrailingSlash(string input)
         {
             if (string.IsNullOrEmpty(input)) return "";
             return Regex.Replace(input, "/+$", "") + "/";
@@ -118,7 +118,7 @@ namespace NetBash.UI
 
         private static string RenderCommand(HttpContext context)
         {
-            if (NetBash.Settings.Authorize != null && !NetBash.Settings.Authorize(HttpContext.Current.Request))
+            if (Settings.Authorize != null && !Settings.Authorize(HttpContext.Current.Request))
                 throw new UnauthorizedAccessException();
 
             string commandResponse;
@@ -127,7 +127,7 @@ namespace NetBash.UI
 
             try
             {
-                var result = NetBash.Current.Process(context.Request.Params["Command"]);
+                var result = CommandEngine.Current.Process(context.Request.Params["Command"]);
                 if (result.IsHtml)
                 {
                     //on your way
@@ -181,7 +181,7 @@ namespace NetBash.UI
             }
 
             var cache = response.Cache;
-            cache.SetCacheability(System.Web.HttpCacheability.Public);
+            cache.SetCacheability(HttpCacheability.Public);
             cache.SetExpires(DateTime.Now.AddDays(7));
             cache.SetValidUntilExpires(true);
 
@@ -193,15 +193,15 @@ namespace NetBash.UI
         {
             string result;
 
-            if (!_ResourceCache.TryGetValue(filename, out result))
+            if (!ResourceCache.TryGetValue(filename, out result))
             {
-                using (var stream = typeof(NetBashHandler).Assembly.GetManifestResourceStream("NetBash.UI." + filename))
+                using (var stream = typeof(WebShellHandler).Assembly.GetManifestResourceStream("NetBash.UI." + filename))
                 using (var reader = new StreamReader(stream))
                 {
                     result = reader.ReadToEnd();
                 }
 
-                _ResourceCache[filename] = result;
+                ResourceCache[filename] = result;
             }
 
             return result;
@@ -210,7 +210,7 @@ namespace NetBash.UI
         /// <summary>
         /// Embedded resource contents keyed by filename.
         /// </summary>
-        private static readonly Dictionary<string, string> _ResourceCache = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> ResourceCache = new Dictionary<string, string>();
 
         /// <summary>
         /// Helper method that sets a proper 404 response code.

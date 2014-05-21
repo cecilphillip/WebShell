@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
-namespace NetBash.Commands
+namespace WebShell.Commands
 {
     [WebCommand("shortcuts", "Displays keyboard shortcuts")]
     public class ShortcutsCommand : IWebCommand

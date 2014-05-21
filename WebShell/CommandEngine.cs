@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Web;
-using NetBash.UI;
-using System.Reflection;
-using NetBash.Helpers;
+using WebShell.Helpers;
+using WebShell.UI;
 
-namespace NetBash
+namespace WebShell
 {
-    public partial class NetBash
+    public class CommandEngine
     {
         private List<Type> _commandTypes;
         private static Type _attributeType = typeof(WebCommandAttribute);
@@ -17,7 +17,7 @@ namespace NetBash
 
         public static void Init()
         {
-            NetBashHandler.RegisterRoutes();
+            WebShellHandler.RegisterRoutes();
         }
 
         private static Type[] TryGetTypes(Assembly assembly) 
@@ -42,17 +42,17 @@ namespace NetBash
     	      	            where _interfaceType.IsAssignableFrom(t)
     	         	        select t;
 
-              _commandTypes = results.ToList();
+              this._commandTypes = results.ToList();
 
             //if we still cant find any throw exception
-            if (_commandTypes == null || !_commandTypes.Any())
+            if (this._commandTypes == null || !this._commandTypes.Any())
                 throw new ApplicationException("No commands found");
         }
 
         internal CommandResult Process(string commandText)
         {
-            if (_commandTypes == null || !_commandTypes.Any())
-                LoadCommands();
+            if (this._commandTypes == null || !this._commandTypes.Any())
+                this.LoadCommands();
 
             if (string.IsNullOrWhiteSpace(commandText))
                 throw new ArgumentNullException("commandText", "Command text cannot be empty");
@@ -61,9 +61,9 @@ namespace NetBash
             var command = (split.FirstOrDefault() ?? commandText).ToLower();
 
             if (command == "help")
-                return renderHelp();
+                return this.renderHelp();
 
-            var commandType = (from c in _commandTypes
+            var commandType = (from c in this._commandTypes
                               let attr = (WebCommandAttribute)c.GetCustomAttributes(_attributeType, false).FirstOrDefault()
                               where attr != null
                               && attr.Name.ToLower() == command
@@ -86,7 +86,7 @@ namespace NetBash
 
             sb.AppendLine("CLEAR           - Clears current console window");
 
-            foreach (var t in _commandTypes)
+            foreach (var t in this._commandTypes)
             {
                 var attr = (WebCommandAttribute)t.GetCustomAttributes(_attributeType, false).FirstOrDefault();
 
@@ -101,27 +101,27 @@ namespace NetBash
 
         public static IHtmlString RenderIncludes()
         {
-            return NetBashHandler.RenderIncludes();
+            return WebShellHandler.RenderIncludes();
         }
 
         #region singleton
-        static readonly NetBash instance= new NetBash();
+        static readonly CommandEngine Instance= new CommandEngine();
 
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
-        static NetBash()
+        static CommandEngine()
         {
         }
 
-        NetBash()
+        CommandEngine()
         {
         }
 
-        public static NetBash Current
+        public static CommandEngine Current
         {
             get
             {
-                return instance;
+                return Instance;
             }
         }
         #endregion

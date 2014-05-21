@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using NetBash.Formatting;
+using WebShell;
+using WebShell.Formatting;
 
 namespace NetBash.Sample.Commands
 {

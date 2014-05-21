@@ -56,10 +56,10 @@
     <Compile Include="Formatting\TableExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="IWebCommand.cs" />
-    <Compile Include="NetBash.cs" />
-    <Compile Include="NetBash.Settings.cs" />
+    <Compile Include="CommandEngine.cs" />
+    <Compile Include="Settings.Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\NetBashHandler.cs" />
+    <Compile Include="UI\WebShellHandler.cs" />
     <Compile Include="WebCommandAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

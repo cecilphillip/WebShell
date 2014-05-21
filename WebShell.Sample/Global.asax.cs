@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace NetBash.Sample
@@ -36,14 +32,11 @@ namespace NetBash.Sample
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            NetBash.Init();
+            WebShell.CommandEngine.Init();
            
-            NetBash.Settings.Authorize = (request) =>
-                {
-                    return request.IsLocal;
-                };
+            WebShell.Settings.Authorize = (request) => request.IsLocal;
 
-            //NetBash.Settings.HiddenByDefault = true;
+            //WebShell.Settings.HiddenByDefault = true;
         }
     }
 }

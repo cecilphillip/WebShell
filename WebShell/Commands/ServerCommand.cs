@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Web;
 
-namespace NetBash.Commands
+namespace WebShell.Commands
 {
     [WebCommand("server", "Displays server info")]
     public class ServerCommand : IWebCommand

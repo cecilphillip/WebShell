@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NetBash.Formatting
+namespace WebShell.Formatting
 {
     public static class SparkExtensions
     {

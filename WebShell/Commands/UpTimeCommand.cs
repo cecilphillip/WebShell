@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 
-namespace NetBash.Commands
+namespace WebShell.Commands
 {
     [WebCommand("uptime", "Display server uptime")]
     public class UpTimeCommand : IWebCommand
@@ -16,7 +13,7 @@ namespace NetBash.Commands
 
         public string Process(string[] args)
         {
-            return UpTime.ToReadableString();
+            return this.UpTime.ToReadableString();
         }
 
         public TimeSpan UpTime

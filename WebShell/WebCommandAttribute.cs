@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace NetBash
+namespace WebShell
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class WebCommandAttribute : Attribute
@@ -13,8 +10,8 @@ namespace NetBash
 
         public WebCommandAttribute(string name, string description)
         {
-            Name = name;
-            Description = description;
+            this.Name = name;
+            this.Description = description;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using NDesk.Options;
 using System.Text;
 using System.IO;
+using WebShell;
 
 namespace NetBash.Sample.Commands
 {

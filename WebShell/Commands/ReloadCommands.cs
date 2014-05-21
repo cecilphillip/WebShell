@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NetBash.Commands
+﻿namespace WebShell.Commands
 {
     [WebCommand("load-commands", "Reloads command assemblies")]
     public class ReloadCommands : IWebCommand
@@ -15,7 +10,7 @@ namespace NetBash.Commands
 
         public string Process(string[] args)
         {
-            NetBash.Current.LoadCommands();
+            CommandEngine.Current.LoadCommands();
             return "Commands loaded, type 'help' to see them";
         }
     }

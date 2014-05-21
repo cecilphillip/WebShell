@@ -1,4 +1,4 @@
-﻿namespace NetBash
+﻿namespace WebShell
 {
     internal class CommandResult
     {
