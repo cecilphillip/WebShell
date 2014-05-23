@@ -82,7 +82,6 @@
     <EmbeddedResource Include="UI\keymaster-js.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\dotless.Compiler.exe" />
     <Content Include="UI\style.css">
       <DependentUpon>style.less</DependentUpon>
     </Content>
