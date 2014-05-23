@@ -18,13 +18,13 @@ namespace WebShell.UI
                 return new HtmlString(""); //not authorized dont render
 
             const string FORMAT =
-@"<link rel=""stylesheet"" type=""text/css"" href=""{0}netbash-style-css?v={1}"">
+@"<link rel=""stylesheet"" type=""text/css"" href=""{0}webshell-style-css?v={1}"">
 <script type=""text/javascript"">
-    if (!window.jQuery) document.write(unescape(""%3Cscript src='{0}netbash-jquery-js' type='text/javascript'%3E%3C/script%3E""));
-    if(!window.key) document.write(unescape(""%3Cscript src='{0}netbash-keymaster-js' type='text/javascript'%3E%3C/script%3E""));
+    if (!window.jQuery) document.write(unescape(""%3Cscript src='{0}webshell-jquery-js' type='text/javascript'%3E%3C/script%3E""));
+    if(!window.key) document.write(unescape(""%3Cscript src='{0}webshell-keymaster-js' type='text/javascript'%3E%3C/script%3E""));
 </script>
-<script type=""text/javascript"" src=""{0}netbash-script-js?v={1}""></script>
-<script type=""text/javascript"">var netbash = new NetBash(jQuery, window, {{ welcomeMessage: '{2}', version: '{3}', isHidden: {4}, routeBasePath: '{5}' }});</script>";
+<script type=""text/javascript"" src=""{0}webshell-script-js?v={1}""></script>
+<script type=""text/javascript"">var webshell = new NetBash(jQuery, window, {{ welcomeMessage: '{2}', version: '{3}', isHidden: {4}, routeBasePath: '{5}' }});</script>";
 
             var result = "";
             result = string.Format(FORMAT, 
@@ -41,11 +41,11 @@ namespace WebShell.UI
         {
             var urls = new[] 
             {  
-                "netbash",
-                "netbash-jquery-js",
-                "netbash-keymaster-js",
-                "netbash-style-css",
-                "netbash-script-js"
+                "webshell",
+                "webshell-jquery-js",
+                "webshell-keymaster-js",
+                "webshell-style-css",
+                "webshell-script-js"
             };
 
             var routes = RouteTable.Routes;
@@ -59,7 +59,7 @@ namespace WebShell.UI
                     var route = new Route(prefix + url, handler)
                     {
                         // we have to specify these, so no MVC route helpers will match, e.g. @Html.ActionLink("Home", "Index", "Home")
-                        Defaults = new RouteValueDictionary(new { controller = "NetBashHandler", action = "ProcessRequest" })
+                        Defaults = new RouteValueDictionary(new { controller = "WebShellHandler", action = "ProcessRequest" })
                     };
 
                     // put our routes at the beginning, like a boss
@@ -97,14 +97,14 @@ namespace WebShell.UI
 
             switch (Path.GetFileNameWithoutExtension(path).ToLower())
             {
-                case "netbash-jquery-js":
-                case "netbash-script-js":
-                case "netbash-style-css":
-                case "netbash-keymaster-js":
+                case "webshell-jquery-js":
+                case "webshell-script-js":
+                case "webshell-style-css":
+                case "webshell-keymaster-js":
                     output = Includes(context, path);
                     break;
 
-                case "netbash":
+                case "webshell":
                     output = RenderCommand(context);
                     break;
 
@@ -185,7 +185,7 @@ namespace WebShell.UI
             cache.SetExpires(DateTime.Now.AddDays(7));
             cache.SetValidUntilExpires(true);
 
-            var embeddedFile = Path.GetFileName(path).Replace("netbash-", "") + extension;
+            var embeddedFile = Path.GetFileName(path).Replace("webshell-", "") + extension;
             return GetResource(embeddedFile);
         }
 
@@ -195,7 +195,7 @@ namespace WebShell.UI
 
             if (!ResourceCache.TryGetValue(filename, out result))
             {
-                using (var stream = typeof(WebShellHandler).Assembly.GetManifestResourceStream("NetBash.UI." + filename))
+                using (var stream = typeof(WebShellHandler).Assembly.GetManifestResourceStream("WebShell.UI." + filename))
                 using (var reader = new StreamReader(stream))
                 {
                     result = reader.ReadToEnd();

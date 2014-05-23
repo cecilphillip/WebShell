@@ -1,13 +1,186 @@
-﻿
+﻿(function (window, $, undefined) {
+    window.webshell = (function () {
+
+        var self = this;
+        var lastCommand;
+        var storageKey = "WebShell-History";
+        var hiddenKey = "WebShell-Hidden";
+        var commandKey = "WebShell-LastCommand";
+        var isOpen = false;
+        var isHidden = (options.isHidden === true);
+        var showLoader;
+        var existingHtml;
+
+        return {
+            setError: setError,
+            scrollBottom: scrollBottom,
+            openConsole: openConsole,
+            closeConsole: closeConsole,
+            startLoader: startLoader,
+            sendCommand: sendCommand,
+            initUI: initUI,
+            toggleConsole:toggleConsole
+        };
+
+        function hasLocalStorage() {
+            try {
+                return 'localStorage' in window && window['localStorage'] !== null;
+            } catch (e) {
+                return false;
+            }
+        };
+
+        function save() {
+            if (!hasLocalStorage()) { return; }
+            localStorage[storageKey] = $("#console-result").html();
+            localStorage[hiddenKey] = isHidden;
+            localStorage[commandKey] = lastCommand;
+        };
+        function load() {
+            if (!hasLocalStorage()) { return; }
+
+            existingHtml = localStorage[storageKey];
+
+            var localStorageHidden = localStorage[hiddenKey];
+            if (localStorageHidden != null)
+                isHidden = (localStorageHidden == 'true');
+
+            lastCommand = localStorage[commandKey];
+        };
+
+        function clearStorage() {
+            if (!hasLocalStorage()) { return; }
+            localStorage[storageKey] = null;
+        };
+
+        function setError(message) {
+            $('<div class="console-error"/>').html(message).appendTo('#console-result');
+        };
+
+        function scrollBottom() {
+            //finish loading
+            clearTimeout(showLoader);
+            $("#console-input").removeClass("loading");
+
+            $("#console-result").scrollTop($("#console-result")[0].scrollHeight);
+        };
+
+        function openConsole() {
+            if (isOpen)
+                return;
+
+            $("#console-input input").focus();
+
+            $("#console-result").fadeIn("fast");
+            $("#webshell-wrap").animate({
+                height: '500px'
+            }, 100, function () {
+                isOpen = true;
+            });
+            self.scrollBottom();
+        };
+
+        function closeConsole() {
+            if (!isOpen)
+                return;
+
+            $("#console-result").fadeOut("fast");
+            $("#webshell-wrap").animate({
+                height: '25px'
+            }, 100, function () {
+                isOpen = false;
+            });
+
+            $("#console-input input").blur();
+        };
+
+        function startLoader() {
+            showLoader = setTimeout("$('#console-input').addClass('loading')", 300);
+        };
+
+        function sendCommand(text) {
+            self.openConsole();
+            $("#console-input input").val("");
+
+            $('<div class="console-request"/>').html(text).appendTo('#console-result');
+            self.scrollBottom();
+
+            //clear command
+            if (text == "clear") {
+                $("#console-result").html("");
+                clearStorage();
+            } else {
+                self.startLoader();
+
+                //send command
+                $.ajax({
+                    url: options.routeBasePath + 'webshell',
+                    dataType: 'json',
+                    data: { Command: text },
+
+                    success: function (data) {
+                        if (data.Success === true) {
+                            if (data.IsHtml) {
+                                //regs div bro
+                                $('<div class="console-response"/>').html(data.Content).appendTo('#console-result');
+                            } else {
+                                //pre that shit
+                                $('<pre class="console-response">' + data.Content + '</pre>').appendTo('#console-result');
+                            }
+                        } else {
+                            self.setError(data.Content);
+                        }
+
+                        self.scrollBottom();
+                        save();
+                    },
+
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        self.setError(thrownError.toString());
+                        self.scrollBottom();
+                        save();
+                    }
+                });
+            }
+        };
+
+        function initUI () {
+            var container = null;
+
+            if (isHidden) {
+                container = $('<div id="webshell-wrap" style="display:none;"/>').appendTo('body');
+            } else {
+                container = $('<div id="webshell-wrap"/>').appendTo('body');
+            }
+
+            var controls = $('<div id="console-result"><div class="console-message">' + options.welcomeMessage + '</div></div><div id="console-input"><span>></span><input type="text" placeholder="webshell ' + options.version + ' " /></div>').appendTo(container);
+
+            if (existingHtml) {
+                $("#console-result").html(existingHtml);
+            }
+        };
+
+        function toggleConsole() {
+            $('#webshell-wrap').slideToggle(90, function () {
+                isHidden = $('#webshell-wrap').is(":hidden");
+                localStorage[hiddenKey] = isHidden;
+            });
+        };
+
+    }());
+
+}(window, jQuery));
+
+
 function NetBash($, window, opt) {
 
     var options = opt || {};
 
     var self = this;
     var lastCommand;
-    var storageKey = "NetBash-History";
-    var hiddenKey = "NetBash-Hidden";
-    var commandKey = "NetBash-LastCommand";
+    var storageKey = "WebShell-History";
+    var hiddenKey = "WebShell-Hidden";
+    var commandKey = "WebShell-LastCommand";
     var isOpen = false;
     var isHidden = (options.isHidden === true);
     var showLoader;
@@ -64,7 +237,7 @@ function NetBash($, window, opt) {
         $("#console-input input").focus();
 
         $("#console-result").fadeIn("fast");
-        $("#netbash-wrap").animate({
+        $("#webshell-wrap").animate({
             height: '500px'
         }, 100, function () {
             isOpen = true;
@@ -77,7 +250,7 @@ function NetBash($, window, opt) {
             return;
 
         $("#console-result").fadeOut("fast");
-        $("#netbash-wrap").animate({
+        $("#webshell-wrap").animate({
             height: '25px'
         }, 100, function () {
             isOpen = false;
@@ -106,7 +279,7 @@ function NetBash($, window, opt) {
 
             //send command
             $.ajax({
-                url: options.routeBasePath + 'netbash',
+                url: options.routeBasePath + 'webshell',
                 dataType: 'json',
                 data: { Command: text },
 
@@ -140,9 +313,9 @@ function NetBash($, window, opt) {
         var container = null;
 
         if (isHidden) {
-            container = $('<div id="netbash-wrap" style="display:none;"/>').appendTo('body');
+            container = $('<div id="webshell-wrap" style="display:none;"/>').appendTo('body');
         } else {
-            container = $('<div id="netbash-wrap"/>').appendTo('body');
+            container = $('<div id="webshell-wrap"/>').appendTo('body');
         }
 
         var controls = $('<div id="console-result"><div class="console-message">' + options.welcomeMessage + '</div></div><div id="console-input"><span>></span><input type="text" placeholder="NetBash ' + options.version + ' " /></div>').appendTo(container);
@@ -153,8 +326,8 @@ function NetBash($, window, opt) {
     };
 
     this.toggleConsole = function () {
-        $('#netbash-wrap').slideToggle(90, function () {
-            isHidden = $('#netbash-wrap').is(":hidden");
+        $('#webshell-wrap').slideToggle(90, function () {
+            isHidden = $('#webshell-wrap').is(":hidden");
             localStorage[hiddenKey] = isHidden;
         });
     };
@@ -189,7 +362,7 @@ function NetBash($, window, opt) {
 
         //close
         $('html').click(function (event) {
-            if (!$(event.target).closest('#netbash-wrap').length) {
+            if (!$(event.target).closest('#webshell-wrap').length) {
                 self.closeConsole();
             };
         });

@@ -26,7 +26,7 @@ namespace WebShell
             var v = Assembly.GetExecutingAssembly().GetName().Version;
             Version = string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build);
 
-            WelcomeMessage = string.Format("<strong><a href=\"http://github.com/lukencode/NetBash\" target=\"_blank\">NetBash {0}</a></strong> - Type \"help\" to list commands", Version);
+            WelcomeMessage = string.Format("<strong><a href=\"http://github.com/cecilphillip/WebShell\" target=\"_blank\">NetBash {0}</a></strong> - Type \"help\" to list commands", Version);
 
             RouteBasePath = "~/";
 

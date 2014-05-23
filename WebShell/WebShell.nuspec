@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>WebShell</id>
+    <version>$version$</version>
+    <authors>Cecil Phillip</authors>
+    <owners>Luke Lowrey, Cecil Phillp</owners>
+    <projectUrl>https://github.com/cecilphillip/WebShell</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description> web based commandline</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>console web shell</tags>
+  </metadata>
+</package>
